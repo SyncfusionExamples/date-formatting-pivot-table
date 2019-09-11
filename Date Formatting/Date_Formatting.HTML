@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>Essential JS 2</title>
+	<!-- Essential JS 2 material theme -->
+	<link href="styles/material.css" rel="stylesheet" type="text/css" />
+
+	<!-- Essential JS 2 pivot table's global script -->
+	<script src="scripts/ej2.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+	<div id="container">
+		<div id="overlay">
+			<div id="text">
+				Please wait...
+			</div>
+		</div>
+		<!-- Add the HTML <div> element for pivot table  -->
+		<div id="PivotTable"></div>
+	</div>
+	<script>
+		setTimeout(() => {
+			var customername = ['TOM', 'Hawk', 'Jon', 'Chandler', 'Monica', 'Rachel', 'Phoebe', 'Gunther',
+				'Ross', 'Geller', 'Joey', 'Bing', 'Tribbiani', 'Janice', 'Bong', 'Perk', 'Green', 'Ken', 'Adams'];
+			var city = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Philadelphia', 'Phoenix', 'San Antonio', 'Austin',
+				'San Francisco', 'Columbus', 'Washington', 'Portland', 'Oklahoma', 'Las Vegas', 'Virginia', 'St. Louis', 'Birmingham'];
+			var dt = 0;
+			var isSpinnerActive = false;
+			var dataSource;
+			var count = 200000;
+			var result = [];
+			for (var i = 1; i < (count + 1); i++) {
+				var sold = Math.round(Math.random() * 5) + 50;
+				var stock =
+					Math.round(Math.round(Math.random() * 10) + 250) - sold;
+				result.push({
+					ProductID: Math.floor(Math.random() * (1010 - 1000 + 1) + 1010),
+					City: city[Math.round(Math.random() * city.length)] || city[0],
+					Date: new Date(new Date(1950, 0, 1).getTime() + Math.random() * (new Date().getTime() - new Date(1950, 0, 1).getTime())),
+					CustomerName: customername[Math.round(Math.random() * customername.length)] || customername[0],
+					Sold: sold,
+					InStock: stock,
+				});
+			}
+			date1 = new Date().getTime();
+			dataSource = result;
+
+			var pivotTableObj = new ej.pivotview.PivotView({
+				dataSourceSettings: {
+					dataSource: dataSource,
+					expandAll: false,
+					enableSorting: false,
+					formatSettings: [{ name: 'Date', type: 'date', format: 'dd/MM/yyyy-hh:mm a' }],
+					rows: [
+						{ name: 'Date', caption: 'Date' }
+					],
+					columns: [
+						{ name: 'ProductID', caption: 'Product ID' }
+					],
+					values: [
+						{ name: 'Sold', caption: 'Unit Sold' },
+						{ name: 'InStock', caption: 'In Stock' }
+					],
+					filters: [],
+					groupSettings: [{ name: 'ProductID', type: 'Number', rangeInterval: 4 }]
+				},
+				enginePopulated: function () {
+					document.getElementById("overlay").style.display = "none";
+				},
+				width: 1050,
+				height: 400,
+				showGroupingBar: true,
+				enableVirtualization: true,
+				maxNodeLimitInMemberEditor: 100
+			});
+			pivotTableObj.appendTo('#PivotTable');
+		});
+	</script>
+</body>
+<style>
+	#overlay {
+		position: fixed;
+		display: block;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: white;
+		z-index: 1002;
+	}
+
+	#text {
+		font-size: 20px;
+		color: black;
+	}
+</style>
+
+</html>
